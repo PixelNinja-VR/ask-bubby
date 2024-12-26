@@ -149,6 +149,11 @@
             button {
                 padding: 15px 20px;
             }
+            .chat-container {
+                height: 70vh; /* Reduce height for smaller screens */
+                max-height: 70vh; /* Ensure it doesn't exceed 70% of the viewport */
+                overflow-y: auto; /* Maintain scroll if content exceeds */
+            }
         }
     </style>
 </head>
