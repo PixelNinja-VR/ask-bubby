@@ -3,7 +3,7 @@
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 import os
-from openai import OpenAI
+import openai
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -11,12 +11,10 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Initialize OpenAI client without proxies
-api_key = os.getenv('OPENAI_API_KEY')
-if not api_key:
+# Initialize OpenAI with the old-style configuration
+openai.api_key = os.getenv('OPENAI_API_KEY')
+if not openai.api_key:
     raise ValueError("No OpenAI API key found. Make sure to set OPENAI_API_KEY in your environment variables.")
-
-client = OpenAI(api_key=api_key)
 
 # Store chat history (replace with database in production)
 chat_histories = {}
@@ -47,13 +45,13 @@ def get_bubby_response(user_message, chat_history):
     messages.append({"role": "user", "content": user_message})
     
     try:
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=messages,
             temperature=0.7,
             max_tokens=500
         )
-        return response.choices[0].message.content
+        return response.choices[0].message['content']
     except Exception as e:
         print(f"Error generating response: {e}")
         return "Oy vey! I'm having a bit of trouble right now. Maybe we should try again in a few minutes?"
