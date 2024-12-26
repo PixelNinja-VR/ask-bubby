@@ -11,8 +11,12 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Initialize OpenAI client without proxies
+api_key = os.getenv('OPENAI_API_KEY')
+if not api_key:
+    raise ValueError("No OpenAI API key found. Make sure to set OPENAI_API_KEY in your environment variables.")
+
+client = OpenAI(api_key=api_key)
 
 # Store chat history (replace with database in production)
 chat_histories = {}
